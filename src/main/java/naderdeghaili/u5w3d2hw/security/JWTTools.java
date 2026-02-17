@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -31,5 +32,16 @@ public class JWTTools {
         } catch (Exception ex) {
             throw new UnauthorizedException("effettua il login");
         }
+    }
+
+    public UUID getIdFromToken(String token) {
+
+        return UUID.fromString(Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(key.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject());
+
     }
 }

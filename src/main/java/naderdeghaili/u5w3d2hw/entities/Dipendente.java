@@ -1,12 +1,17 @@
 package naderdeghaili.u5w3d2hw.entities;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "dipendenti")
-public class Dipendente {
+public class Dipendente implements UserDetails {
     @Id
     @GeneratedValue
     private UUID id;
@@ -23,6 +28,8 @@ public class Dipendente {
     private String avatar;
     @Column(nullable = false)
     private String password;
+    @Enumerated(EnumType.STRING)
+    private Ruolo ruolo;
 
     public Dipendente() {
     }
@@ -34,6 +41,7 @@ public class Dipendente {
         this.email = email;
         this.avatar = "https://placecats.com/150/150";
         this.password = password;
+        this.ruolo = Ruolo.UTENTE;
     }
 
 
@@ -81,8 +89,27 @@ public class Dipendente {
         this.avatar = avatar;
     }
 
+
     public String getPassword() {
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Ruolo getRuolo() {
+        return ruolo;
+    }
+
+    public void setRuolo(Ruolo ruolo) {
+        this.ruolo = ruolo;
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.ruolo.name()));
     }
 
     @Override

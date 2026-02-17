@@ -3,6 +3,7 @@ package naderdeghaili.u5w3d2hw.exceptions;
 import naderdeghaili.u5w3d2hw.payloads.ErrorsDTO;
 import naderdeghaili.u5w3d2hw.payloads.ErrorsWithListDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -31,5 +32,13 @@ public class ErrorsHandler {
 
         return new ErrorsDTO(ex.getMessage(), LocalDateTime.now());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorsDTO handleAuthorizationDeniedException(AuthorizationDeniedException ex) {
+
+        return new ErrorsDTO("Non disponi dei permessi necessari", LocalDateTime.now());
+    }
+
 
 }

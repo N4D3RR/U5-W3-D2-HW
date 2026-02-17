@@ -8,6 +8,8 @@ import naderdeghaili.u5w3d2hw.payloads.NewDipendenteDTO;
 import naderdeghaili.u5w3d2hw.services.DipendentiService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,7 @@ public class DipendentiController {
 
     //GET DIPENDENTI
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Page<Dipendente> findAll(@RequestParam(defaultValue = "0") @Min(0) int page,
                                     @RequestParam(defaultValue = "15") @Min(0) @Max(15) int size) {
         return this.dipendentiService.findAll(page, size);
@@ -36,12 +39,14 @@ public class DipendentiController {
 
     //GET DIPENDENTE
     @GetMapping("/{dipendenteId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Dipendente getDipendenteById(@PathVariable UUID dipendenteId) {
         return this.dipendentiService.findById(dipendenteId);
     }
 
     //PUT DIPENDNETE
     @PutMapping("/{dipendenteId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Dipendente updateDipendente(@PathVariable UUID dipendenteId, @RequestBody @Validated NewDipendenteDTO payload, BindingResult validateResult) {
         if (validateResult.hasErrors()) {
             List<String> errorList = validateResult.getFieldErrors()
@@ -56,6 +61,7 @@ public class DipendentiController {
 
     //DELETE DIPENDENTE
     @DeleteMapping("/{dipendenteId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteViaggio(@PathVariable UUID dipendenteId) {
         this.dipendentiService.findByIdAndDelete(dipendenteId);
@@ -67,6 +73,35 @@ public class DipendentiController {
 
         Dipendente modifiedAvatarDipendente = this.dipendentiService.uploadAvatar(dipendenteId, file);
         return modifiedAvatarDipendente;
+    }
+
+    //GET PUT DELETE DIPENDENTE SU /ME
+
+    //GET
+    @GetMapping("/me")
+    public Dipendente getDipendenteById(@AuthenticationPrincipal Dipendente currentAuthDipendente) {
+        return this.dipendentiService.findById(currentAuthDipendente.getId());
+    }
+
+    //PUT
+    @PutMapping("/me")
+    public Dipendente updateDipendenteMe(@AuthenticationPrincipal Dipendente currentAuthDipendente, @RequestBody @Validated NewDipendenteDTO payload, BindingResult validateResult) {
+        if (validateResult.hasErrors()) {
+            List<String> errorList = validateResult.getFieldErrors()
+                    .stream()
+                    .map(fieldError -> fieldError.getDefaultMessage())
+                    .toList();
+            throw new ValidationException((errorList));
+        } else {
+            return this.dipendentiService.findByIdAndUpdate(currentAuthDipendente.getId(), payload);
+        }
+
+    }
+
+    //DELETE
+    @DeleteMapping("/me")
+    public void deleteDipendenteMe(@AuthenticationPrincipal Dipendente currentAuthDipendente) {
+        this.dipendentiService.findByIdAndDelete(currentAuthDipendente.getId());
     }
 
 
