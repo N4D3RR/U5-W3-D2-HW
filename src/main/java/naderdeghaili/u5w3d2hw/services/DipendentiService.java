@@ -46,7 +46,7 @@ public class DipendentiService {
             throw new IllegalArgumentException("l'username è già in uso");
         }
 
-        Dipendente newDipendente = new Dipendente(payload.username(), payload.nome(), payload.cognome(), payload.email());
+        Dipendente newDipendente = new Dipendente(payload.username(), payload.nome(), payload.cognome(), payload.email(), payload.password());
 
         return dipendentiRepository.save(newDipendente);
     }

@@ -33,21 +33,6 @@ public class DipendentiController {
         return this.dipendentiService.findAll(page, size);
     }
 
-    //POST DIPENDENTE
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Dipendente saveDipendente(@RequestBody @Validated NewDipendenteDTO payload, BindingResult validateResult) {
-        if (validateResult.hasErrors()) {
-            List<String> errorList = validateResult.getFieldErrors()
-                    .stream()
-                    .map(fieldError -> fieldError.getDefaultMessage())
-                    .toList();
-            throw new ValidationException((errorList));
-        } else {
-            return this.dipendentiService.saveDipendente(payload);
-        }
-    }
-
 
     //GET DIPENDENTE
     @GetMapping("/{dipendenteId}")

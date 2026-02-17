@@ -3,6 +3,7 @@ package naderdeghaili.u5w3d2hw.services;
 import naderdeghaili.u5w3d2hw.entities.Dipendente;
 import naderdeghaili.u5w3d2hw.exceptions.UnauthorizedException;
 import naderdeghaili.u5w3d2hw.payloads.LoginDTO;
+import naderdeghaili.u5w3d2hw.repositories.DipendentiRepository;
 import naderdeghaili.u5w3d2hw.security.JWTTools;
 import org.springframework.stereotype.Service;
 
@@ -13,16 +14,18 @@ public class LoginService {
     private final DipendentiService dipendentiService;
     private final JWTTools jwtTools;
 
-    public LoginService(DipendentiService dipendentiService, JWTTools jwtTools) {
+
+    public LoginService(DipendentiService dipendentiService, JWTTools jwtTools, DipendentiRepository dipendentiRepository) {
         this.dipendentiService = dipendentiService;
         this.jwtTools = jwtTools;
+
 
     }
 
 
     public String getCredentialsGiveToken(LoginDTO body) {
         Dipendente found = this.dipendentiService.findByEmail(body.email());
-        if (found.getEmail().equals(body.email())) {
+        if (found.getPassword().equals(body.password())) {
             String accessToken = jwtTools.createToken(found);
 
             return accessToken;
@@ -33,3 +36,5 @@ public class LoginService {
 
     }
 }
+
+

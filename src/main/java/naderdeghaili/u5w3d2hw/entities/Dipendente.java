@@ -21,16 +21,19 @@ public class Dipendente {
     private String email;
     @Column(nullable = false)
     private String avatar;
+    @Column(nullable = false)
+    private String password;
 
     public Dipendente() {
     }
 
-    public Dipendente(String username, String nome, String cognome, String email) {
+    public Dipendente(String username, String nome, String cognome, String email, String password) {
         this.username = username;
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
         this.avatar = "https://placecats.com/150/150";
+        this.password = password;
     }
 
 
@@ -76,6 +79,10 @@ public class Dipendente {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     @Override
