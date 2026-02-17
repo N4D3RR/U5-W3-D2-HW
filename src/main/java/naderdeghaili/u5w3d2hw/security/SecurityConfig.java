@@ -1,0 +1,29 @@
+package naderdeghaili.u5w3d2hw.security;
+
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain sfc(HttpSecurity httpSecurity) {
+//disabilito login form
+        httpSecurity.formLogin(fl -> fl.disable());
+//disabilito controllo sicurezza csrf
+        httpSecurity.csrf(csrf -> csrf.disable());
+//lavoriamo in modalità stateless
+        httpSecurity.sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//ilbera tutti
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/**").permitAll());
+
+
+        return httpSecurity.build();
+    }
+}
