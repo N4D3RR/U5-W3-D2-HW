@@ -10,6 +10,7 @@ import naderdeghaili.u5w3d2hw.repositories.DipendentiRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,11 +24,13 @@ public class DipendentiService {
 
     private final DipendentiRepository dipendentiRepository;
     private final Cloudinary clUploader;
+    private final PasswordEncoder bcrypt;
 
 
-    public DipendentiService(DipendentiRepository dipendentiRepository, Cloudinary clUploader) {
+    public DipendentiService(DipendentiRepository dipendentiRepository, Cloudinary clUploader, PasswordEncoder bcrypt) {
         this.dipendentiRepository = dipendentiRepository;
         this.clUploader = clUploader;
+        this.bcrypt = bcrypt;
     }
 
     //GET LISTA DIPENDENTI
@@ -46,7 +49,7 @@ public class DipendentiService {
             throw new IllegalArgumentException("l'username è già in uso");
         }
 
-        Dipendente newDipendente = new Dipendente(payload.username(), payload.nome(), payload.cognome(), payload.email(), payload.password());
+        Dipendente newDipendente = new Dipendente(payload.username(), payload.nome(), payload.cognome(), payload.email(), bcrypt.encode(payload.password()));
 
         return dipendentiRepository.save(newDipendente);
     }
