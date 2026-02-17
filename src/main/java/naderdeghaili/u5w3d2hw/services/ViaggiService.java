@@ -40,7 +40,7 @@ public class ViaggiService {
 
     //GET VIAGGIO
     public Viaggio findById(UUID viaggioId) {
-        return viaggiRepository.findById(viaggioId).orElseThrow(() -> new NotFoundException(viaggioId));
+        return viaggiRepository.findById(viaggioId).orElseThrow(() -> new NotFoundException("Viaggio con id " + viaggioId + " Non trovato"));
     }
 
     //PUT VIAGGIO

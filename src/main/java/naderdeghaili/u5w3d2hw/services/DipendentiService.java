@@ -56,7 +56,7 @@ public class DipendentiService {
 
     //GET DIPENDENTE
     public Dipendente findById(UUID dipendenteId) {
-        return dipendentiRepository.findById(dipendenteId).orElseThrow(() -> new NotFoundException(dipendenteId));
+        return dipendentiRepository.findById(dipendenteId).orElseThrow(() -> new NotFoundException("Dipendente con id " + dipendenteId + " Non trovato"));
     }
 
     //PUT DIPENDENTE

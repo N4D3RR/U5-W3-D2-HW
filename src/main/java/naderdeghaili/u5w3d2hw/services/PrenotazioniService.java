@@ -28,12 +28,11 @@ public class PrenotazioniService {
         this.dipendentiRepository = dipendentiRepository;
     }
 
-    public Prenotazione savePrenotazione(NewPrenotazioneDTO payload) {
+    public Prenotazione savePrenotazione(NewPrenotazioneDTO payload, Dipendente currentAuthDipendente) {
 
-        Viaggio viaggio = viaggiRepository.findById(payload.viaggioId()).orElseThrow(() -> new NotFoundException(payload.viaggioId()));
+        Viaggio viaggio = viaggiRepository.findById(payload.viaggioId()).orElseThrow(() -> new NotFoundException("Viaggio con id " + payload.viaggioId() + " Non trovato"));
 
-        Dipendente dipendente = dipendentiRepository.findById(payload.dipendenteId()).orElseThrow(() -> new NotFoundException(payload.dipendenteId()));
-
+        Dipendente dipendente = currentAuthDipendente;
 
         if (prenotazioniRepository.existsByViaggioIdAndDipendenteId(viaggio.getId(), dipendente.getId())) {
             throw new ValidationException(List.of("il dipendente ha già prenotato questo viaggio"));
